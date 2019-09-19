@@ -1,30 +1,39 @@
 package ditto
 
-import "errors"
+import (
+	"errors"
+)
 
 var ErrTypeExists = errors.New("type already exists")
 var ErrGroupNotRegistered = errors.New("group is not registered")
+
+type Info struct {
+	Key string
+	Child []Info
+	InfoValidation func(data interface{}) error
+	IsOptional bool
+}
 
 type Type struct {
 	Type      string
 	Value     string
 	Group     *Group
-	ValidInfo []string
+	Infos []Info
 }
 
 type Group struct {
 	Name      string
-	ValidInfo []string
+	Infos []Info
 }
 
 var groups map[string]*Group
 
 func RegisterGroup(g *Group) error {
-	if _, ok := types[g.Name]; ok {
+	if _, ok := groups[g.Name]; ok {
 		return ErrTypeExists
 	}
 
-	types[g.Name] = g
+	groups[g.Name] = g
 	return nil
 }
 
@@ -51,7 +60,7 @@ func RegisterType(t *Type) error {
 		return ErrGroupNotRegistered
 	}
 
-	t.ValidInfo = append(t.ValidInfo, t.Group.ValidInfo...)
+	t.Infos = append(t.Infos, t.Group.Infos...)
 	types[t.Value] = t
 	return nil
 }
@@ -64,27 +73,49 @@ func init() {
 func registerDefaultGroups() {
 	_ = RegisterGroup(&Group{
 		Name:      "section",
-		ValidInfo: nil,
+		Infos: nil,
 	})
 
 	_ = RegisterGroup(&Group{
 		Name:      "section_field",
-		ValidInfo: nil,
+		Infos: nil,
 	})
 
 	_ = RegisterGroup(&Group{
 		Name:      "text",
-		ValidInfo: nil,
+		Infos: nil,
 	})
 
 	_ = RegisterGroup(&Group{
 		Name:      "file",
-		ValidInfo: nil,
+		Infos: nil,
 	})
 
 	_ = RegisterGroup(&Group{
 		Name:      "list",
-		ValidInfo: nil,
+		Infos: []Info{
+			{
+				Key: "options",
+				Child: []Info{
+					{
+						Key: "type",
+						InfoValidation: func(data interface{}) error {
+							val, ok := data.(string)
+							if !ok {
+								return errors.New("info_type_should_be_string")
+							}
+							if val != "static" && val != "dynamic" {
+								return errors.New("form_info_options_type_should_be_static_or_dynamic")
+							}
+							return nil
+						},
+					},
+					{
+						Key: "value",
+					},
+				},
+			},
+		},
 	})
 }
 
@@ -135,7 +166,13 @@ func registerDefaultTypes() {
 		Type:      "field",
 		Value:     "photo_camera",
 		Group:     GetGroup("file"),
-		ValidInfo: []string{"instruction_image"},
+		Infos: []Info{
+			{
+				Key:            "instruction_image",
+				Child:          nil,
+				InfoValidation: nil,
+			},
+		},
 	})
 
 	_ = RegisterType(&Type{

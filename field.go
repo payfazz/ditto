@@ -34,6 +34,11 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		return nil, errors.New(`form_should_have_property_validation`)
 	}
 
+	validationInterface, ok := data["validations"].([]interface{})
+	if !ok {
+		return nil, errors.New("form_validation_should_be_array")
+	}
+
 	fieldType, ok := data["type"].(string)
 	if !ok {
 		return nil, errors.New(`form_type_should_be_string`)
@@ -56,14 +61,9 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		}
 	}
 
-	validationInterface, ok := data["validations"].([]interface{})
-	if !ok {
-		return nil, errors.New("form_validation_should_be_array")
-	}
 	validationRules := extractArrayMap(validationInterface)
-
 	for _, rule := range validationRules {
-		err := validateFormValidation(rule)
+		err := validateValidation(rule)
 		if err != nil {
 			return nil, err
 		}
@@ -76,6 +76,6 @@ func validateInfo(info map[string]interface{}, typ *Type) error {
 	return nil
 }
 
-func validateFormValidation(rule map[string]interface{}) error {
+func validateValidation(rule map[string]interface{}) error {
 	return nil
 }
