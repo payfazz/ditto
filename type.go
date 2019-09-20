@@ -5,6 +5,8 @@ import (
 )
 
 var ErrTypeExists = errors.New("type already exists")
+var ErrTypeCannotBeEmpty = errors.New("type cannot be empty")
+var ErrValueCannotBeEmpty = errors.New("value cannot be empty")
 var ErrGroupNotRegistered = errors.New("group is not registered")
 
 type Info struct {
@@ -26,7 +28,7 @@ type Group struct {
 	Infos []Info
 }
 
-var groups map[string]*Group
+var groups = map[string]*Group{}
 
 func RegisterGroup(g *Group) error {
 	if _, ok := groups[g.Name]; ok {
@@ -41,14 +43,22 @@ func GetGroup(key string) *Group {
 	return groups[key]
 }
 
-var types map[string]*Type
+var types = map[string]*Type{}
 
 func GetType(key string) *Type {
 	return types[key]
 }
 
 func RegisterType(t *Type) error {
-	if _, ok := types[t.Type]; ok {
+	if t.Value == "" {
+		return ErrValueCannotBeEmpty
+	}
+
+	if t.Type == "" {
+		return ErrTypeCannotBeEmpty
+	}
+
+	if _, ok := types[t.Value]; ok {
 		return ErrTypeExists
 	}
 
@@ -202,6 +212,24 @@ func registerDefaultTypes() {
 		Type:  "field",
 		Value: "object_searchable_list",
 		Group: GetGroup("list"),
+		Infos: []Info{
+			{
+				Key: "type",
+				InfoValidation: func(data interface{}) error {
+					val, ok := data.(string)
+					if !ok {
+						return errors.New("info_type_should_be_string")
+					}
+					if val != "static" && val != "dynamic" {
+						return errors.New("form_info_options_type_should_be_static_or_dynamic")
+					}
+					return nil
+				},
+			},
+			{
+				Key: "value",
+			},
+		},
 	})
 
 	_ = RegisterType(&Type{
