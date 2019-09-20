@@ -8,21 +8,21 @@ var ErrTypeExists = errors.New("type already exists")
 var ErrGroupNotRegistered = errors.New("group is not registered")
 
 type Info struct {
-	Key string
-	Child []Info
+	Key            string
+	Child          []Info
 	InfoValidation func(data interface{}) error
-	IsOptional bool
+	IsOptional     bool
 }
 
 type Type struct {
-	Type      string
-	Value     string
-	Group     *Group
+	Type  string
+	Value string
+	Group *Group
 	Infos []Info
 }
 
 type Group struct {
-	Name      string
+	Name  string
 	Infos []Info
 }
 
@@ -60,7 +60,6 @@ func RegisterType(t *Type) error {
 		return ErrGroupNotRegistered
 	}
 
-	t.Infos = append(t.Infos, t.Group.Infos...)
 	types[t.Value] = t
 	return nil
 }
@@ -72,27 +71,27 @@ func init() {
 
 func registerDefaultGroups() {
 	_ = RegisterGroup(&Group{
-		Name:      "section",
+		Name:  "section",
 		Infos: nil,
 	})
 
 	_ = RegisterGroup(&Group{
-		Name:      "section_field",
+		Name:  "section_field",
 		Infos: nil,
 	})
 
 	_ = RegisterGroup(&Group{
-		Name:      "text",
+		Name:  "text",
 		Infos: nil,
 	})
 
 	_ = RegisterGroup(&Group{
-		Name:      "file",
+		Name:  "file",
 		Infos: nil,
 	})
 
 	_ = RegisterGroup(&Group{
-		Name:      "list",
+		Name: "list",
 		Infos: []Info{
 			{
 				Key: "options",
@@ -163,9 +162,9 @@ func registerDefaultTypes() {
 	})
 
 	_ = RegisterType(&Type{
-		Type:      "field",
-		Value:     "photo_camera",
-		Group:     GetGroup("file"),
+		Type:  "field",
+		Value: "photo_camera",
+		Group: GetGroup("file"),
 		Infos: []Info{
 			{
 				Key:            "instruction_image",
