@@ -1,12 +1,14 @@
 package ditto
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 type Section struct {
 	ID           string
 	Type         Type
 	Title        string
-	Description  string
 	ChildSection []Section
 	ChildField   []Field
 	Info         map[string]interface{}
@@ -28,11 +30,13 @@ func NewSectionFromMap(data map[string]interface{}) (*Section, error) {
 
 	fieldType, ok := data["type"].(string)
 	if !ok {
+		fmt.Println(data)
 		return nil, errors.New(`section_type_not_supported`)
 	}
 
 	typ := GetType(fieldType)
 	if nil == typ {
+		fmt.Println(data)
 		return nil, errors.New(`section_type_not_supported`)
 	}
 
@@ -50,6 +54,7 @@ func NewSectionFromMap(data map[string]interface{}) (*Section, error) {
 	}
 
 	if typ.Type != "section" {
+		fmt.Println(data)
 		return nil, errors.New(`section_type_not_supported`)
 	}
 
@@ -62,7 +67,6 @@ func NewSectionFromMap(data map[string]interface{}) (*Section, error) {
 		ID:           data["id"].(string),
 		Type:         *typ,
 		Title:        data["title"].(string),
-		Description:  data["description"].(string),
 		ChildSection: nil,
 		ChildField:   nil,
 		Info:         info,

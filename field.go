@@ -49,8 +49,9 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		return nil, errors.New(`form_type_not_supported`)
 	}
 
+	var info map[string]interface{}
 	if data["info"] != nil {
-		info, ok := data["info"].(map[string]interface{})
+		info, ok = data["info"].(map[string]interface{})
 		if !ok {
 			return nil, errors.New("field_info_should_be_an_object")
 		}
@@ -69,8 +70,8 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		}
 	}
 
-	if typ.Type != "section" {
-		return nil, errors.New(`section_type_not_supported`)
+	if typ.Type != "field" {
+		return nil, errors.New(`field_type_not_supported`)
 	}
 
 	return &Field{
@@ -79,7 +80,7 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		Title:       data["title"].(string),
 		Description: data["description"].(string),
 		Validations: nil, //TODO: extract validations
-		Info:        data["info"].(map[string]interface{}),
+		Info:        info,
 	}, nil
 }
 

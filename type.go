@@ -143,6 +143,12 @@ func registerDefaultTypes() {
 
 	_ = RegisterType(&Type{
 		Type:  "section",
+		Value: "nextable_form",
+		Group: GetGroup("section_field"),
+	})
+
+	_ = RegisterType(&Type{
+		Type:  "section",
 		Value: "nextable_field",
 		Group: GetGroup("section_field"),
 	})

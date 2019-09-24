@@ -19,6 +19,12 @@ func TestForm(t *testing.T) {
 	}
 
 	t.Log(f)
+
+	m, err := json.Marshal(f)
+	if nil != err {
+		t.Fatal(err)
+	}
+	t.Log(m)
 }
 
 var jsonData = `{
