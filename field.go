@@ -7,11 +7,11 @@ type Field struct {
 	Type        Type
 	Title       string
 	Description string
-	Validations []Validation
+	Validations []FieldValidation
 	Info        map[string]interface{}
 }
 
-type Validation struct {
+type FieldValidation struct {
 	Type         string
 	ErrorMessage string
 	Value        string
@@ -69,7 +69,18 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		}
 	}
 
-	return nil, nil
+	if typ.Type != "section" {
+		return nil, errors.New(`section_type_not_supported`)
+	}
+
+	return &Field{
+		ID:          data["id"].(string),
+		Type:        *typ,
+		Title:       data["title"].(string),
+		Description: data["description"].(string),
+		Validations: nil, //TODO: extract validations
+		Info:        data["info"].(map[string]interface{}),
+	}, nil
 }
 
 func validateInfo(info map[string]interface{}, typ *Type) error {
