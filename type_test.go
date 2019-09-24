@@ -13,7 +13,7 @@ func TestRegisterFieldFail(t *testing.T) {
 	}
 
 	typ = &ditto.Type{
-		Type:  "test",
+		Type: "test",
 	}
 
 	err = ditto.RegisterType(typ)
@@ -22,7 +22,7 @@ func TestRegisterFieldFail(t *testing.T) {
 	}
 
 	typ = &ditto.Type{
-		Value:  "test",
+		Value: "test",
 	}
 
 	err = ditto.RegisterType(typ)
@@ -33,8 +33,8 @@ func TestRegisterFieldFail(t *testing.T) {
 
 func TestRegisterGroupAndField(t *testing.T) {
 	g := &ditto.Group{
-		Name:  "test",
-		Infos: nil,
+		Name:          "test",
+		ValidInfoKeys: nil,
 	}
 	err := ditto.RegisterGroup(g)
 	if err != nil {
@@ -47,10 +47,10 @@ func TestRegisterGroupAndField(t *testing.T) {
 	}
 
 	typ := &ditto.Type{
-		Type:  "test",
-		Value: "empty",
-		Group: g,
-		Infos: nil,
+		Type:          "test",
+		Value:         "empty",
+		Group:         g,
+		ValidInfoKeys: nil,
 	}
 	err = ditto.RegisterType(typ)
 	if err != nil {

@@ -10,22 +10,22 @@ var ErrValueCannotBeEmpty = errors.New("value cannot be empty")
 var ErrGroupNotRegistered = errors.New("group is not registered")
 
 type Info struct {
-	Key            string
-	Child          []Info
-	InfoValidation func(data interface{}) error
-	IsOptional     bool
+	Key                 string
+	Child               []Info
+	FieldInfoValidation func(f Field) error
+	IsOptional          bool
 }
 
 type Type struct {
-	Type  string
-	Value string
-	Group *Group
-	Infos []Info
+	Type          string
+	Value         string
+	Group         *Group
+	ValidInfoKeys []Info
 }
 
 type Group struct {
-	Name  string
-	Infos []Info
+	Name          string
+	ValidInfoKeys []Info
 }
 
 var groups = map[string]*Group{}
@@ -81,35 +81,35 @@ func init() {
 
 func registerDefaultGroups() {
 	_ = RegisterGroup(&Group{
-		Name:  "section",
-		Infos: nil,
+		Name:          "section",
+		ValidInfoKeys: nil,
 	})
 
 	_ = RegisterGroup(&Group{
-		Name:  "section_field",
-		Infos: nil,
+		Name:          "section_field",
+		ValidInfoKeys: nil,
 	})
 
 	_ = RegisterGroup(&Group{
-		Name:  "text",
-		Infos: nil,
+		Name:          "text",
+		ValidInfoKeys: nil,
 	})
 
 	_ = RegisterGroup(&Group{
-		Name:  "file",
-		Infos: nil,
+		Name:          "file",
+		ValidInfoKeys: nil,
 	})
 
 	_ = RegisterGroup(&Group{
 		Name: "list",
-		Infos: []Info{
+		ValidInfoKeys: []Info{
 			{
 				Key: "options",
 				Child: []Info{
 					{
 						Key: "type",
-						InfoValidation: func(data interface{}) error {
-							val, ok := data.(string)
+						FieldInfoValidation: func(f Field) error {
+							val, ok := f.Info["options"].(map[string]interface{})["type"].(string)
 							if !ok {
 								return errors.New("info_type_should_be_string")
 							}
@@ -175,11 +175,11 @@ func registerDefaultTypes() {
 		Type:  "field",
 		Value: "photo_camera",
 		Group: GetGroup("file"),
-		Infos: []Info{
+		ValidInfoKeys: []Info{
 			{
-				Key:            "instruction_image",
-				Child:          nil,
-				InfoValidation: nil,
+				Key:                 "instruction_image",
+				Child:               nil,
+				FieldInfoValidation: nil,
 			},
 		},
 	})
@@ -212,11 +212,11 @@ func registerDefaultTypes() {
 		Type:  "field",
 		Value: "object_searchable_list",
 		Group: GetGroup("list"),
-		Infos: []Info{
+		ValidInfoKeys: []Info{
 			{
 				Key: "type",
-				InfoValidation: func(data interface{}) error {
-					val, ok := data.(string)
+				FieldInfoValidation: func(f Field) error {
+					val, ok := f.Info["type"].(string)
 					if !ok {
 						return errors.New("info_type_should_be_string")
 					}
