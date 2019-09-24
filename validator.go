@@ -1,0 +1,132 @@
+package ditto
+
+import (
+	"errors"
+	"net/url"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
+)
+
+var ErrKeyEmpty = errors.New("function key cannot be empty")
+var ErrFuncEmpty = errors.New("function cannot be empty")
+
+var validators = make(map[string]FieldValidator)
+
+type FieldValidator func(value interface{}, fieldVal FieldValidation) bool
+
+func RegisterValidation(tag string, fn FieldValidator) error {
+	if len(tag) == 0 {
+		return ErrKeyEmpty
+	}
+
+	if fn == nil {
+		return ErrFuncEmpty
+	}
+
+	validators[tag] = fn
+	return nil
+}
+
+func init() {
+	_ = RegisterValidation("required", func(value interface{}, fieldVal FieldValidation) bool {
+		if value == nil {
+			return false
+		}
+		valueObj, ok := value.(map[string]interface{})
+		if !ok {
+			return false
+		}
+		if valueObj["value"] == nil {
+			return false
+		}
+
+		return true
+	})
+
+	_ = RegisterValidation("text_length_between", func(value interface{}, fieldVal FieldValidation) bool {
+		splitBetween := strings.Split(fieldVal.Value, ",")
+		min, _ := strconv.Atoi(splitBetween[0])
+		max, _ := strconv.Atoi(splitBetween[1])
+
+		valueObj := value.(map[string]interface{})
+		valueString, ok := valueObj["value"].(string)
+		if !ok {
+			return false
+		}
+
+		if len(valueString) < min || len(valueString) > max {
+			return false
+		}
+
+		return true
+	})
+
+	_ = RegisterValidation("age_between", func(value interface{}, fieldVal FieldValidation) bool {
+		splitBetween := strings.Split(fieldVal.Value, ",")
+		min, _ := strconv.Atoi(splitBetween[0])
+		max, _ := strconv.Atoi(splitBetween[1])
+
+		valueObj := value.(map[string]interface{})
+		valueString, ok := valueObj["value"].(string)
+		if !ok {
+			return false
+		}
+
+		birthDate, _ := time.Parse("02-01-2006", valueString)
+		now := time.Now()
+		years := now.Year() - birthDate.Year()
+		if now.YearDay() < birthDate.YearDay() {
+			years--
+		}
+		if years < min || years > max {
+			return false
+		}
+
+		return true
+	})
+
+	_ = RegisterValidation("date_between", func(value interface{}, fieldVal FieldValidation) bool {
+		splitBetween := strings.Split(fieldVal.Value, ",")
+
+		valueObj := value.(map[string]interface{})
+		valueString, ok := valueObj["value"].(string)
+		if !ok {
+			return false
+		}
+
+		date, _ := time.Parse("02-01-2006", valueString)
+		min, err := time.Parse("02-01-2006", splitBetween[0])
+		if nil != err {
+			return false
+		}
+
+		max, err := time.Parse("02-01-2006", splitBetween[1])
+		if nil != err {
+			return false
+		}
+
+		if date.UTC().Unix() < min.UTC().Unix() || date.UTC().Unix() > max.UTC().Unix() {
+			return false
+		}
+
+		return true
+	})
+
+	_ = RegisterValidation("regex", func(value interface{}, fieldVal FieldValidation) bool {
+		valueObj := value.(map[string]interface{})
+		valueString, ok := valueObj["value"].(string)
+		if !ok {
+			return false
+		}
+
+		validationVal, _ := url.QueryUnescape(fieldVal.Value)
+		match, _ := regexp.MatchString(validationVal, valueString)
+		if !match {
+			return false
+		}
+
+		return true
+	})
+}
