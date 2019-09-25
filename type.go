@@ -2,6 +2,7 @@ package ditto
 
 import (
 	"errors"
+	"fmt"
 )
 
 var ErrTypeExists = errors.New("type already exists")
@@ -21,6 +22,10 @@ type Type struct {
 	Value         string `json:"value"`
 	Group         *Group `json:"-"`
 	ValidInfoKeys []Info `json:"-"`
+}
+
+func (t Type) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%s"`, t.Value)), nil
 }
 
 type Group struct {
