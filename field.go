@@ -62,16 +62,13 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		}
 	}
 
-	validationRules := extractArrayMap(validationInterface)
-	for _, rule := range validationRules {
-		err := validateValidation(rule)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	if typ.Type != "field" {
 		return nil, errors.New(`field_type_not_supported`)
+	}
+
+	vals, err := extractValidations(validationInterface)
+	if err != nil {
+		return nil, err
 	}
 
 	return &Field{
@@ -79,7 +76,7 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		Type:        *typ,
 		Title:       data["title"].(string),
 		Description: data["description"].(string),
-		Validations: nil, //TODO: extract validations
+		Validations: vals,
 		Info:        info,
 	}, nil
 }
@@ -88,6 +85,33 @@ func validateInfo(info map[string]interface{}, typ *Type) error {
 	return nil
 }
 
-func validateValidation(rule map[string]interface{}) error {
-	return nil
+func extractValidations(vals []interface{}) ([]FieldValidation, error) {
+	result := make([]FieldValidation, 0)
+	for _, val := range vals {
+		data, ok := val.(map[string]interface{})
+		if !ok {
+			return nil, errors.New("validation must be object")
+		}
+
+		v := FieldValidation{}
+
+		if data["error_message"] == nil {
+			return nil, errors.New(`validation should have property: error_message`)
+		}
+
+		v.ErrorMessage = data["error_message"].(string)
+
+		if data["type"] == nil {
+			return nil, errors.New(`validation should have property: type`)
+		}
+
+		v.Type = data["type"].(string)
+
+		if data["value"] != nil {
+			v.Value = data["value"].(string)
+		}
+		result = append(result, v)
+	}
+
+	return result, nil
 }

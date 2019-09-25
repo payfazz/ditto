@@ -18,7 +18,7 @@ func TestForm(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Log(f)
+	t.Logf("%+v", f)
 
 	m, err := json.Marshal(f)
 	if nil != err {
