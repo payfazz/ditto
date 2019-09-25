@@ -1,6 +1,9 @@
 package ditto
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 type Field struct {
 	ID          string
@@ -58,6 +61,7 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 
 		err := validateInfo(info, typ)
 		if err != nil {
+			fmt.Println(data)
 			return nil, err
 		}
 	}
@@ -82,6 +86,22 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 }
 
 func validateInfo(info map[string]interface{}, typ *Type) error {
+	for _, inf := range typ.ValidInfoKeys {
+		val, ok := info[inf.Key]
+		if !ok && !inf.IsOptional {
+			return errors.New(fmt.Sprintf("info should have property: %s", inf.Key))
+		}
+
+		if inf.FieldInfoValidation == nil {
+			continue
+		}
+
+		err := inf.FieldInfoValidation(val.(string))
+		if nil != err {
+			return err
+		}
+	}
+
 	return nil
 }
 

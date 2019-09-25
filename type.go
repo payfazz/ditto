@@ -12,7 +12,7 @@ var ErrGroupNotRegistered = errors.New("group is not registered")
 type Info struct {
 	Key                 string
 	Child               []Info
-	FieldInfoValidation func(f Field) error
+	FieldInfoValidation func(val string) error
 	IsOptional          bool
 }
 
@@ -108,11 +108,7 @@ func registerDefaultGroups() {
 				Child: []Info{
 					{
 						Key: "type",
-						FieldInfoValidation: func(f Field) error {
-							val, ok := f.Info["options"].(map[string]interface{})["type"].(string)
-							if !ok {
-								return errors.New("info_type_should_be_string")
-							}
+						FieldInfoValidation: func(val string) error {
 							if val != "static" && val != "dynamic" {
 								return errors.New("form_info_options_type_should_be_static_or_dynamic")
 							}
@@ -218,24 +214,6 @@ func registerDefaultTypes() {
 		Type:  "field",
 		Value: "object_searchable_list",
 		Group: GetGroup("list"),
-		ValidInfoKeys: []Info{
-			{
-				Key: "type",
-				FieldInfoValidation: func(f Field) error {
-					val, ok := f.Info["type"].(string)
-					if !ok {
-						return errors.New("info_type_should_be_string")
-					}
-					if val != "static" && val != "dynamic" {
-						return errors.New("form_info_options_type_should_be_static_or_dynamic")
-					}
-					return nil
-				},
-			},
-			{
-				Key: "value",
-			},
-		},
 	})
 
 	_ = RegisterType(&Type{
