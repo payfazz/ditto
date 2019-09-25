@@ -6,12 +6,12 @@ import (
 )
 
 type Section struct {
-	ID           string
-	Type         Type
-	Title        string
-	ChildSection []Section
-	ChildField   []Field
-	Info         map[string]interface{}
+	ID           string                 `json:"id"`
+	Type         Type                   `json:"type"`
+	Title        string                 `json:"title"`
+	ChildSection []Section              `json:"child_section"`
+	ChildField   []Field                `json:"child_field"`
+	Info         map[string]interface{} `json:"info"`
 }
 
 func NewSectionFromMap(data map[string]interface{}) (*Section, error) {

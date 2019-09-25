@@ -12,15 +12,15 @@ var ErrGroupNotRegistered = errors.New("group is not registered")
 type Info struct {
 	Key                 string
 	Child               []Info
-	FieldInfoValidation func(val string) error
+	FieldInfoValidation func(val string) error `json:"-"`
 	IsOptional          bool
 }
 
 type Type struct {
-	Type          string
-	Value         string
-	Group         *Group
-	ValidInfoKeys []Info
+	Type          string `json:"type"`
+	Value         string `json:"value"`
+	Group         *Group `json:"-"`
+	ValidInfoKeys []Info `json:"-"`
 }
 
 type Group struct {

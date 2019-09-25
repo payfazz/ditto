@@ -6,18 +6,18 @@ import (
 )
 
 type Field struct {
-	ID          string
-	Type        Type
-	Title       string
-	Description string
-	Validations []FieldValidation
-	Info        map[string]interface{}
+	ID          string                 `json:"id"`
+	Type        Type                   `json:"type"`
+	Title       string                 `json:"title"`
+	Description string                 `json:"description"`
+	Validations []FieldValidation      `json:"validations"`
+	Info        map[string]interface{} `json:"info"`
 }
 
 type FieldValidation struct {
-	Type         string
-	ErrorMessage string
-	Value        string
+	Type         string `json:"type"`
+	ErrorMessage string `json:"error_message"`
+	Value        string `json:"value"`
 }
 
 func NewFieldFromMap(data map[string]interface{}) (*Field, error) {

@@ -24,7 +24,7 @@ func TestForm(t *testing.T) {
 	if nil != err {
 		t.Fatal(err)
 	}
-	t.Log(m)
+	t.Log(string(m))
 }
 
 var jsonData = `{
