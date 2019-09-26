@@ -13,7 +13,7 @@ var ErrGroupNotRegistered = errors.New("group is not registered")
 type Info struct {
 	Key                 string
 	Child               []Info
-	FieldInfoValidation func(val string) error `json:"-"`
+	FieldInfoValidation func(val string) error
 	IsOptional          bool
 }
 
@@ -71,12 +71,56 @@ func RegisterType(t *Type) error {
 		return ErrGroupNotRegistered
 	}
 
-	if GetGroup(t.Group.Name) == nil {
+	group := GetGroup(t.Group.Name)
+	if group == nil {
 		return ErrGroupNotRegistered
 	}
 
+	infos := make(map[string]Info)
+
+	for _, inf := range group.ValidInfoKeys {
+		infos[inf.Key] = inf
+	}
+
+	t.ValidInfoKeys = MergeInfoKey(infos, t.ValidInfoKeys)
 	types[t.Value] = t
 	return nil
+}
+
+func MergeInfoKey(infos map[string]Info, arr []Info) []Info {
+	for _, inf := range arr {
+		val, ok := infos[inf.Key]
+		if !ok {
+			infos[inf.Key] = inf
+			continue
+		}
+
+		if inf.FieldInfoValidation != nil {
+			val.FieldInfoValidation = inf.FieldInfoValidation
+		}
+		val.IsOptional = inf.IsOptional
+		if len(val.Child) == 0 {
+			val.Child = inf.Child
+			infos[inf.Key] = val
+			continue
+		}
+
+		_infos := make(map[string]Info)
+		for _, _inf := range val.Child {
+			_infos[_inf.Key] = _inf
+		}
+
+		merged := MergeInfoKey(_infos, inf.Child)
+		val.Child = merged
+		infos[inf.Key] = val
+	}
+
+	infosArr := make([]Info, 0)
+	for _, val := range infos {
+		infosArr = append(infosArr, val)
+	}
+
+	return infosArr
 }
 
 func init() {
