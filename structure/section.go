@@ -93,7 +93,7 @@ func NewSectionFromMap(data map[string]interface{}) (*Section, error) {
 			return nil, errors.New("field_info_should_be_an_object")
 		}
 
-		err := validateInfo(info, typ)
+		err := validateInfo(info, typ.ValidInfoKeys)
 		if err != nil {
 			return nil, err
 		}

@@ -60,7 +60,7 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 			return nil, errors.New("field_info_should_be_an_object")
 		}
 
-		err := validateInfo(info, typ)
+		err := validateInfo(info, typ.ValidInfoKeys)
 		if err != nil {
 			fmt.Println(data)
 			return nil, err
@@ -99,18 +99,30 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 	}, nil
 }
 
-func validateInfo(info map[string]interface{}, typ *Type) error {
-	for _, inf := range typ.ValidInfoKeys {
+func validateInfo(info map[string]interface{}, validInfoKeys []Info) error {
+	for _, inf := range validInfoKeys {
 		val, ok := info[inf.Key]
 		if !ok && !inf.IsOptional {
 			return errors.New(fmt.Sprintf("info should have property: %s", inf.Key))
 		}
 
-		if inf.FieldInfoValidation == nil {
+		if inf.FieldInfoValidation != nil {
+			err := inf.FieldInfoValidation(val.(string))
+			if nil != err {
+				return err
+			}
+		}
+
+		if len(inf.Child) == 0 {
 			continue
 		}
 
-		err := inf.FieldInfoValidation(val.(string))
+		valMap, ok := val.(map[string]interface{})
+		if !ok {
+			return errors.New(fmt.Sprintf("property should be an object: %s", inf.Key))
+		}
+
+		err := validateInfo(valMap, inf.Child)
 		if nil != err {
 			return err
 		}
