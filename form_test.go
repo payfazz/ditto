@@ -3,6 +3,7 @@ package ditto_test
 import (
 	"encoding/json"
 	"github.com/payfazz/ditto"
+	"reflect"
 	"testing"
 )
 
@@ -13,19 +14,86 @@ func TestForm(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	f, err := ditto.NewSectionFromMap(structure)
+	root, err := ditto.NewSectionFromMap(structure)
 	if nil != err {
 		t.Fatal(err)
 	}
 
-	t.Logf("%+v", f)
+	t.Logf("%+v", root)
 
-	m, err := json.Marshal(f)
+	m, err := json.Marshal(root)
 	if nil != err {
 		t.Fatal(err)
 	}
 	t.Log(string(m))
+
+	isEquals, err := JSONBytesEqual(m, []byte(jsonData))
+	if !isEquals {
+		t.Fatal("true expected")
+	}
 }
+
+func TestForm2(t *testing.T) {
+	var structure map[string]interface{}
+	err := json.Unmarshal([]byte(jsonData2), &structure)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	root, err := ditto.NewSectionFromMap(structure)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	t.Logf("%+v", root)
+	m, err := json.Marshal(root)
+	if nil != err {
+		t.Fatal(err)
+	}
+	t.Log(string(m))
+
+	isEquals, err := JSONBytesEqual(m, []byte(jsonData2))
+	if !isEquals {
+		t.Fatal("true expected")
+	}
+}
+
+func JSONBytesEqual(a, b []byte) (bool, error) {
+	var j, j2 interface{}
+	if err := json.Unmarshal(a, &j); err != nil {
+		return false, err
+	}
+	if err := json.Unmarshal(b, &j2); err != nil {
+		return false, err
+	}
+	return reflect.DeepEqual(j2, j), nil
+}
+
+var jsonData2 = `{
+	"id": "test",
+	"type":"summary_section_send",
+	"description": "test",
+	"title":"test",
+	"child": [
+		{
+			"id": "a",
+			"type": "text",
+			"title": "a title",
+			"description": "a desc",
+			"validations": [
+				{
+				  "type": "required",
+				  "error_message": "Harus diisi"
+				},
+				{
+				  "type": "regex",
+				  "value": "%5E%5B%5Cw%20%5D%7B2%2C100%7D%24",
+				  "error_message": "Pastikan nama toko alphanumeric"
+				}
+		  	]
+		}
+	]
+}`
 
 var jsonData = `{
   "id": "task_form_section",
@@ -127,7 +195,6 @@ var jsonData = `{
           },
           "type": "object_searchable_list",
           "title": "Daerah Tempat Toko Berada (Kelurahan)",
-          "value": "",
           "description": "Masukkan daerah tempat toko berada (Kelurahan)",
           "placeholder": "Contoh: Gandaria Utara, Kebayoran baru, Jakarta Selatan, DKI Jakarta, Indonesia",
           "validations": [

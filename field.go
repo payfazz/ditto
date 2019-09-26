@@ -9,15 +9,16 @@ type Field struct {
 	ID          string                 `json:"id"`
 	Type        Type                   `json:"type"`
 	Title       string                 `json:"title"`
-	Description string                 `json:"description"`
+	Description *string                `json:"description"`
+	Placeholder *string                `json:"placeholder"`
 	Validations []FieldValidation      `json:"validations"`
-	Info        map[string]interface{} `json:"info"`
+	Info        map[string]interface{} `json:"info,omitempty"`
 }
 
 type FieldValidation struct {
 	Type         string `json:"type"`
 	ErrorMessage string `json:"error_message"`
-	Value        string `json:"value"`
+	Value        string `json:"value,omitempty"`
 }
 
 func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
@@ -28,7 +29,7 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		return nil, errors.New(`form_should_have_property_type`)
 	}
 	if data["title"] == nil {
-		return nil, errors.New(`form_should_have_property_name`)
+		return nil, errors.New(`form_should_have_property_title`)
 	}
 	if data["description"] == nil {
 		return nil, errors.New(`form_should_have_property_description`)
@@ -75,11 +76,24 @@ func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
 		return nil, err
 	}
 
+	var desc *string
+	if data["description"] != nil {
+		descVal := data["description"].(string)
+		desc = &descVal
+	}
+
+	var placeholder *string
+	if data["placeholder"] != nil {
+		placeholderVal := data["placeholder"].(string)
+		placeholder = &placeholderVal
+	}
+
 	return &Field{
 		ID:          data["id"].(string),
 		Type:        *typ,
 		Title:       data["title"].(string),
-		Description: data["description"].(string),
+		Description: desc,
+		Placeholder: placeholder,
 		Validations: vals,
 		Info:        info,
 	}, nil
