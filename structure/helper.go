@@ -1,4 +1,4 @@
-package ditto
+package structure
 
 func extractArrayMap(child []interface{}) []map[string]interface{} {
 	var arrMap []map[string]interface{}

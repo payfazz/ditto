@@ -1,4 +1,4 @@
-package ditto
+package structure
 
 type Form struct {
 	Name      string

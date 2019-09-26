@@ -1,20 +1,20 @@
-package ditto_test
+package structure_test
 
 import (
 	"encoding/json"
-	"github.com/payfazz/ditto"
+	"github.com/payfazz/ditto/structure"
 	"reflect"
 	"testing"
 )
 
 func TestForm(t *testing.T) {
-	var structure map[string]interface{}
-	err := json.Unmarshal([]byte(jsonData), &structure)
+	var s map[string]interface{}
+	err := json.Unmarshal([]byte(jsonData), &s)
 	if nil != err {
 		t.Fatal(err)
 	}
 
-	root, err := ditto.NewSectionFromMap(structure)
+	root, err := structure.NewSectionFromMap(s)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -34,13 +34,13 @@ func TestForm(t *testing.T) {
 }
 
 func TestForm2(t *testing.T) {
-	var structure map[string]interface{}
-	err := json.Unmarshal([]byte(jsonData2), &structure)
+	var s map[string]interface{}
+	err := json.Unmarshal([]byte(jsonData2), &s)
 	if nil != err {
 		t.Fatal(err)
 	}
 
-	root, err := ditto.NewSectionFromMap(structure)
+	root, err := structure.NewSectionFromMap(s)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -80,6 +80,7 @@ var jsonData2 = `{
 			"type": "text",
 			"title": "a title",
 			"description": "a desc",
+			"placeholder": null,
 			"validations": [
 				{
 				  "type": "required",
