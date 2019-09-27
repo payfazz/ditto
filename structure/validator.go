@@ -16,7 +16,15 @@ var validators = make(map[string]FieldValidator)
 
 type FieldValidator func(value interface{}, fieldVal FieldValidation) bool
 
-func RegisterValidation(tag string, fn FieldValidator) error {
+func GetValidator(key string) FieldValidator {
+	val, ok := validators[key]
+	if !ok {
+		return nil
+	}
+	return val
+}
+
+func RegisterValidator(tag string, fn FieldValidator) error {
 	if len(tag) == 0 {
 		return ErrKeyEmpty
 	}
@@ -30,7 +38,7 @@ func RegisterValidation(tag string, fn FieldValidator) error {
 }
 
 func init() {
-	_ = RegisterValidation("required", func(value interface{}, fieldVal FieldValidation) bool {
+	_ = RegisterValidator("required", func(value interface{}, fieldVal FieldValidation) bool {
 		if value == nil {
 			return false
 		}
@@ -42,10 +50,14 @@ func init() {
 			return false
 		}
 
+		if valueObj["value"].(string) == "" {
+			return false
+		}
+
 		return true
 	})
 
-	_ = RegisterValidation("text_length_between", func(value interface{}, fieldVal FieldValidation) bool {
+	_ = RegisterValidator("text_length_between", func(value interface{}, fieldVal FieldValidation) bool {
 		splitBetween := strings.Split(fieldVal.Value, ",")
 		min, _ := strconv.Atoi(splitBetween[0])
 		max, _ := strconv.Atoi(splitBetween[1])
@@ -63,7 +75,7 @@ func init() {
 		return true
 	})
 
-	_ = RegisterValidation("age_between", func(value interface{}, fieldVal FieldValidation) bool {
+	_ = RegisterValidator("age_between", func(value interface{}, fieldVal FieldValidation) bool {
 		splitBetween := strings.Split(fieldVal.Value, ",")
 		min, _ := strconv.Atoi(splitBetween[0])
 		max, _ := strconv.Atoi(splitBetween[1])
@@ -87,7 +99,7 @@ func init() {
 		return true
 	})
 
-	_ = RegisterValidation("date_between", func(value interface{}, fieldVal FieldValidation) bool {
+	_ = RegisterValidator("date_between", func(value interface{}, fieldVal FieldValidation) bool {
 		splitBetween := strings.Split(fieldVal.Value, ",")
 
 		valueObj := value.(map[string]interface{})
@@ -114,7 +126,7 @@ func init() {
 		return true
 	})
 
-	_ = RegisterValidation("regex", func(value interface{}, fieldVal FieldValidation) bool {
+	_ = RegisterValidator("regex", func(value interface{}, fieldVal FieldValidation) bool {
 		valueObj := value.(map[string]interface{})
 		valueString, ok := valueObj["value"].(string)
 		if !ok {

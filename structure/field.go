@@ -13,6 +13,7 @@ type Field struct {
 	Placeholder *string                `json:"placeholder"`
 	Validations []FieldValidation      `json:"validations"`
 	Info        map[string]interface{} `json:"info,omitempty"`
+	Status        map[string]interface{} `json:"status,omitempty"`
 }
 
 type FieldValidation struct {
