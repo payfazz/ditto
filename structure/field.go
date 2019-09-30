@@ -13,7 +13,7 @@ type Field struct {
 	Placeholder *string                `json:"placeholder"`
 	Validations []FieldValidation      `json:"validations"`
 	Info        map[string]interface{} `json:"info,omitempty"`
-	Status        map[string]interface{} `json:"status,omitempty"`
+	Status      map[string]interface{} `json:"status,omitempty"`
 }
 
 type FieldValidation struct {
@@ -22,10 +22,18 @@ type FieldValidation struct {
 	Value        string `json:"value,omitempty"`
 }
 
-func NewFieldFromMap(data map[string]interface{}) (*Field, error) {
+func newFieldFromMap(data map[string]interface{}, ids map[string]bool) (*Field, error) {
 	if data["id"] == nil {
 		return nil, errors.New(`form_should_have_property_id`)
 	}
+
+	id := data["id"].(string)
+	if _, ok := ids[id]; ok {
+		return nil, errors.New("id_must_unique")
+	}
+
+	ids[id] = true
+
 	if data["type"] == nil {
 		return nil, errors.New(`form_should_have_property_type`)
 	}

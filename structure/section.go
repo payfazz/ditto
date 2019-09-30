@@ -61,9 +61,22 @@ func (s Section) MarshalJSON() ([]byte, error) {
 }
 
 func NewSectionFromMap(data map[string]interface{}) (*Section, error) {
-	if data["id"] == nil {
+	ids := make(map[string]bool)
+	return newSectionFromMap(data, ids)
+}
+
+func newSectionFromMap(data map[string]interface{}, ids map[string]bool) (*Section, error) {
+	if nil == data["id"] {
 		return nil, errors.New(`section_should_have_property_id`)
 	}
+
+	id := data["id"].(string)
+	if _, ok := ids[id]; ok {
+		return nil, errors.New("id_must_unique")
+	}
+
+	ids[id] = true
+
 	if data["title"] == nil {
 		return nil, errors.New(`section_should_have_property_title`)
 	}
@@ -115,7 +128,7 @@ func NewSectionFromMap(data map[string]interface{}) (*Section, error) {
 		desc = &descVal
 	}
 	result := &Section{
-		ID:           data["id"].(string),
+		ID:           id,
 		Type:         *typ,
 		Title:        data["title"].(string),
 		Description:  desc,
@@ -136,7 +149,7 @@ func NewSectionFromMap(data map[string]interface{}) (*Section, error) {
 		//fields
 		childs := make([]Field, 0)
 		for _, child := range childSection {
-			field, err := NewFieldFromMap(child)
+			field, err := newFieldFromMap(child, ids)
 			if err != nil {
 				return nil, err
 			}
@@ -147,7 +160,7 @@ func NewSectionFromMap(data map[string]interface{}) (*Section, error) {
 		//sections
 		childs := make([]Section, 0)
 		for _, child := range childSection {
-			field, err := NewSectionFromMap(child)
+			field, err := newSectionFromMap(child, ids)
 			if err != nil {
 				return nil, err
 			}

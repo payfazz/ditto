@@ -5,10 +5,10 @@ import (
 	"fmt"
 )
 
-func InputForm(root *Section, input map[string]interface{}) {
+func ValidateFormInput(root *Section, input map[string]interface{}) {
 	if len(root.ChildSection) > 0 {
 		for _, child := range root.ChildSection {
-			InputForm(&child, input)
+			ValidateFormInput(&child, input)
 		}
 		return
 	}
@@ -51,7 +51,7 @@ func InputForm(root *Section, input map[string]interface{}) {
 				errObj := make(map[string]interface{})
 				errObj["type"] = "error"
 				errObj["message"] = validation.ErrorMessage
-				input["error"] = validation.ErrorMessage
+				valueMap["error"] = validation.ErrorMessage
 				child.Status = errObj
 			}
 		}
