@@ -163,6 +163,6 @@ func print(infos []structure.Info, level int) {
 			fmt.Printf(" ")
 		}
 		fmt.Println(inf.Key)
-		print(inf.Child, level + 1)
+		print(inf.Child, level+1)
 	}
 }

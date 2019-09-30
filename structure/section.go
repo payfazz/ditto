@@ -16,6 +16,17 @@ type Section struct {
 	Info         map[string]interface{} `json:"info,omitempty"`
 }
 
+type SectionWithStatus struct {
+	ID           string                 `json:"id"`
+	Type         Type                   `json:"type"`
+	Title        string                 `json:"title"`
+	Description  *string                `json:"description"`
+	ChildSection []*SectionWithStatus   `json:"child_section"`
+	ChildField   []*FieldWithValue      `json:"child_field"`
+	Info         map[string]interface{} `json:"info,omitempty"`
+	Status       map[string]interface{} `json:"status"`
+}
+
 func (s Section) MarshalJSON() ([]byte, error) {
 	type WithSection struct {
 		ID           string                 `json:"id"`
@@ -55,6 +66,54 @@ func (s Section) MarshalJSON() ([]byte, error) {
 		Description: s.Description,
 		ChildField:  s.ChildField,
 		Info:        s.Info,
+	}
+
+	return json.Marshal(result)
+}
+
+func (s SectionWithStatus) MarshalJSON() ([]byte, error) {
+	type WithSection struct {
+		ID           string                 `json:"id"`
+		Type         Type                   `json:"type"`
+		Title        string                 `json:"title"`
+		Description  *string                `json:"description"`
+		ChildSection []*SectionWithStatus   `json:"child"`
+		Info         map[string]interface{} `json:"info,omitempty"`
+		Status       map[string]interface{} `json:"status"`
+	}
+
+	if len(s.ChildSection) > 0 {
+		result := WithSection{
+			ID:           s.ID,
+			Type:         s.Type,
+			Title:        s.Title,
+			Description:  s.Description,
+			ChildSection: s.ChildSection,
+			Info:         s.Info,
+			Status:       s.Status,
+		}
+
+		return json.Marshal(result)
+	}
+
+	type WithField struct {
+		ID          string                 `json:"id"`
+		Type        Type                   `json:"type"`
+		Title       string                 `json:"title"`
+		Description *string                `json:"description"`
+		ChildField  []*FieldWithValue       `json:"child"`
+		Info        map[string]interface{} `json:"info,omitempty"`
+		Status      map[string]interface{} `json:"status"`
+	}
+
+	result := WithField{
+		ID:          s.ID,
+		Type:        s.Type,
+		Title:       s.Title,
+		Description: s.Description,
+		ChildField:  s.ChildField,
+		Info:        s.Info,
+		Status:      s.Status,
 	}
 
 	return json.Marshal(result)

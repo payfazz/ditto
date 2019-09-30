@@ -16,6 +16,18 @@ type Field struct {
 	Status      map[string]interface{} `json:"status,omitempty"`
 }
 
+type FieldWithValue struct {
+	ID          string                 `json:"id"`
+	Type        Type                   `json:"type"`
+	Title       string                 `json:"title"`
+	Description *string                `json:"description"`
+	Placeholder *string                `json:"placeholder"`
+	Validations []FieldValidation      `json:"validations"`
+	Info        map[string]interface{} `json:"info,omitempty"`
+	Status      map[string]interface{} `json:"status,omitempty"`
+	Value       interface{}            `json:"value,omitempty"`
+}
+
 type FieldValidation struct {
 	Type         string `json:"type"`
 	ErrorMessage string `json:"error_message"`

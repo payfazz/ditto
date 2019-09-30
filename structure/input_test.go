@@ -27,20 +27,20 @@ func TestInput(t *testing.T) {
 	values := data["values"].(map[string]interface{})
 	t.Log(values)
 
-	structure.ValidateFormInput(root, values)
-	t.Log(values)
+	result, err := structure.ValidateFormInput(root, values)
 
-	m, err := json.Marshal(values)
+	m, err := json.Marshal(result)
 	if nil != err {
 		t.Fatal(err)
 	}
 	t.Log(string(m))
+	t.Log(result.Structure)
 }
 
 var inputJson = `{
   "values": {
     "name": {
-      "value": "",
+      "value": "@@@",
       "type": "text"
     }
   }
