@@ -1,4 +1,4 @@
-package structure
+package ditto
 
 import (
 	"encoding/json"
@@ -101,7 +101,7 @@ func (s SectionWithStatus) MarshalJSON() ([]byte, error) {
 		Type        Type                   `json:"type"`
 		Title       string                 `json:"title"`
 		Description *string                `json:"description"`
-		ChildField  []*FieldWithValue       `json:"child"`
+		ChildField  []*FieldWithValue      `json:"child"`
 		Info        map[string]interface{} `json:"info,omitempty"`
 		Status      map[string]interface{} `json:"status"`
 	}

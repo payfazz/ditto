@@ -1,8 +1,8 @@
-package structure_test
+package ditto_test
 
 import (
 	"encoding/json"
-	"github.com/payfazz/ditto/structure"
+	"github.com/payfazz/ditto"
 	"testing"
 )
 
@@ -13,7 +13,7 @@ func TestInput(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	root, err := structure.NewSectionFromMap(s)
+	root, err := ditto.NewSectionFromMap(s)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -27,7 +27,7 @@ func TestInput(t *testing.T) {
 	values := data["values"].(map[string]interface{})
 	t.Log(values)
 
-	result, err := structure.ValidateFormInput(root, values)
+	result, err := ditto.ValidateFormInput(root, values)
 
 	m, err := json.Marshal(result)
 	if nil != err {

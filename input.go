@@ -1,4 +1,4 @@
-package structure
+package ditto
 
 import (
 	"encoding/json"

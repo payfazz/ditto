@@ -1,74 +1,74 @@
-package structure_test
+package ditto_test
 
 import (
 	"fmt"
-	"github.com/payfazz/ditto/structure"
+	"github.com/payfazz/ditto"
 	"testing"
 )
 
 func TestRegisterFieldFail(t *testing.T) {
-	typ := &structure.Type{}
-	err := structure.RegisterType(typ)
+	typ := &ditto.Type{}
+	err := ditto.RegisterType(typ)
 	if err == nil {
 		t.Fatal("error expected")
 	}
 
-	typ = &structure.Type{
+	typ = &ditto.Type{
 		Type: "test",
 	}
 
-	err = structure.RegisterType(typ)
+	err = ditto.RegisterType(typ)
 	if err == nil {
 		t.Fatal("error expected")
 	}
 
-	typ = &structure.Type{
+	typ = &ditto.Type{
 		Value: "test",
 	}
 
-	err = structure.RegisterType(typ)
+	err = ditto.RegisterType(typ)
 	if err == nil {
 		t.Fatal("error expected")
 	}
 }
 
 func TestRegisterGroupAndField(t *testing.T) {
-	g := &structure.Group{
+	g := &ditto.Group{
 		Name:          "test",
 		ValidInfoKeys: nil,
 	}
-	err := structure.RegisterGroup(g)
+	err := ditto.RegisterGroup(g)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = structure.RegisterGroup(g)
+	err = ditto.RegisterGroup(g)
 	if err == nil {
 		t.Fatal("error expected")
 	}
 
-	typ := &structure.Type{
+	typ := &ditto.Type{
 		Type:          "test",
 		Value:         "empty",
 		Group:         g,
 		ValidInfoKeys: nil,
 	}
-	err = structure.RegisterType(typ)
+	err = ditto.RegisterType(typ)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = structure.RegisterType(typ)
+	err = ditto.RegisterType(typ)
 	if err == nil {
 		t.Fatal("error expected")
 	}
 }
 
 func TestMerge(t *testing.T) {
-	a := []structure.Info{
+	a := []ditto.Info{
 		{
 			Key: "a",
-			Child: []structure.Info{
+			Child: []ditto.Info{
 				{
 					Key: "a1",
 				},
@@ -82,13 +82,13 @@ func TestMerge(t *testing.T) {
 		},
 		{
 			Key: "c",
-			Child: []structure.Info{
+			Child: []ditto.Info{
 				{
 					Key: "c2",
 				},
 				{
 					Key: "c1",
-					Child: []structure.Info{
+					Child: []ditto.Info{
 						{
 							Key: "c11",
 						},
@@ -101,16 +101,16 @@ func TestMerge(t *testing.T) {
 		},
 	}
 
-	b := []structure.Info{
+	b := []ditto.Info{
 		{
 			Key: "A",
-			Child: []structure.Info{
+			Child: []ditto.Info{
 				{
 					Key: "A1",
 				},
 				{
 					Key: "A2",
-					Child: []structure.Info{
+					Child: []ditto.Info{
 						{
 							Key: "A21",
 						},
@@ -124,16 +124,16 @@ func TestMerge(t *testing.T) {
 		},
 		{
 			Key: "c",
-			Child: []structure.Info{
+			Child: []ditto.Info{
 				{
 					Key: "c3",
 				},
 				{
 					Key: "c2",
-					Child: []structure.Info{
+					Child: []ditto.Info{
 						{
 							Key: "c21",
-							Child: []structure.Info{
+							Child: []ditto.Info{
 								{
 									Key: "c211",
 								},
@@ -148,16 +148,16 @@ func TestMerge(t *testing.T) {
 		},
 	}
 
-	infos := make(map[string]structure.Info)
+	infos := make(map[string]ditto.Info)
 	for _, inf := range a {
 		infos[inf.Key] = inf
 	}
 
-	result := structure.MergeInfoKey(infos, b)
+	result := ditto.MergeInfoKey(infos, b)
 	print(result, 0)
 }
 
-func print(infos []structure.Info, level int) {
+func print(infos []ditto.Info, level int) {
 	for _, inf := range infos {
 		for i := 0; i < level; i++ {
 			fmt.Printf(" ")
