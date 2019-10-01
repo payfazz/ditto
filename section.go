@@ -196,7 +196,7 @@ func newSectionFromMap(data map[string]interface{}, ids map[string]bool) (*Secti
 		Info:         info,
 	}
 
-	childSection := extractArrayMap(childInterface)
+	childSection := arrayToArrayOfMapString(childInterface)
 
 	if len(childSection) == 0 {
 		return nil, errors.New(`section_should_have_child`)
