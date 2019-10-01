@@ -104,6 +104,36 @@ if nil != err {
 }
 ```
 
+JSON attributes of section:
+```yaml
+id: string #required. must be unique in entire form
+type: string #required. Type must be registered in ditto. Type's group must be section
+title: string #required
+description: string #optional
+info: array #must comply to registered type's info validator
+child: array #array of section or array of field
+```
+
+JSON attributes of field:
+```yaml
+id: string #required. must be unique in entire form
+type: string #required. Type must be registered in ditto. Type's group must be field
+title: string #required
+description: string #optional
+placeholder: string #optional
+info: array #must comply to registered type's info validator
+validations: array #array of validation
+value: string #optional
+```
+
+JSON attributes of validation:
+```yaml
+type: string #required. must be registered in ditto validator
+error_message: string #required
+value: string #optional. needed for validation rules
+```
+
+
 <a name="validate-input"/>
 
 ## Validate Input
