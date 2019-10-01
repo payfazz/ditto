@@ -1,4 +1,8 @@
-# ditto
+# ditto - Payfazz Dynamic Form
+
+<p align="center">
+<img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/132.png" width="150"/>
+</p>
 
 #### Table of Contents  
 1. [Validation](#validation)
