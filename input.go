@@ -38,11 +38,11 @@ func validateFormInput(root *Section, input map[string]interface{}, validatedRoo
 		childs := make([]*SectionWithStatus, 0)
 		for _, child := range root.ChildSection {
 			sec := &SectionWithStatus{
-				ID:           child.ID,
-				Type:         child.Type,
-				Title:        child.Title,
-				Description:  child.Description,
-				Info:         child.Info,
+				ID:          child.ID,
+				Type:        child.Type,
+				Title:       child.Title,
+				Description: child.Description,
+				Info:        child.Info,
 			}
 			childs = append(childs, sec)
 			_validatedRoot := &SectionWithStatus{}
