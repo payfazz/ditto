@@ -2,25 +2,20 @@ package xml2json_test
 
 import (
 	"encoding/json"
-	xj "github.com/basgys/goxml2json"
+	"github.com/payfazz/ditto/xml2json"
 	"reflect"
-	"strings"
 	"testing"
 )
 
 func TestXML2JSON(t *testing.T) {
-	xml := strings.NewReader(`
-<SummarySectionSend id="test" description="test" title="test">
-    <Text id="a" title="a title" description="a desc" validate="required#Harus diisi|regex,%5E%5B%5Cw%20%5D%7B2%2C100%7D%24#Pastikan nama toko alphanumeric"/>
-</SummarySectionSend>`)
-	jsonResult, err := xj.Convert(xml)
+	jsonResult, err := xml2json.XMLToDittoJSON(xmlString)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	t.Log(jsonResult.String())
+	t.Log(jsonResult)
 
-	isEquals, err := JSONBytesEqual([]byte(expectedJSON), jsonResult.Bytes())
+	isEquals, err := JSONBytesEqual([]byte(expectedJSON), []byte(jsonResult))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,6 +36,12 @@ func JSONBytesEqual(a, b []byte) (bool, error) {
 	return reflect.DeepEqual(j2, j), nil
 }
 
+var xmlString = `
+<SummarySectionSend id="test" description="test" title="test">
+<Text id="a" title="a title" description="a desc" validate="required#Harus diisi|regex:%5E%5B%5Cw%20%5D%7B2%2C100%7D%24#Pastikan nama toko alphanumeric"/>
+</SummarySectionSend>
+`
+
 var expectedJSON = `{
 	"id": "test",
 	"type":"summary_section_send",
@@ -52,7 +53,6 @@ var expectedJSON = `{
 			"type": "text",
 			"title": "a title",
 			"description": "a desc",
-			"placeholder": null,
 			"validations": [
 				{
 				  "type": "required",
