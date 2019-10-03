@@ -1,4 +1,8 @@
-# ditto
+# ditto - Payfazz Dynamic Form
+
+<p align="center">
+<img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/132.png" width="150"/>
+</p>
 
 #### Table of Contents  
 1. [Validation](#validation)
@@ -13,10 +17,10 @@
 
 Default validations:
 - required
-- text_length_between
-- age_between
-- date_between
-- regex
+- text_length_between. Value: *min,max*
+- age_between. Value: *min,max*
+- date_between. Value: *min,max*
+- regex. Value: *regex_pattern*
 
 Register new validation
 
