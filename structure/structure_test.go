@@ -3,6 +3,7 @@ package structure_test
 import (
 	"fmt"
 	"github.com/payfazz/ditto/structure"
+	"github.com/payfazz/ditto/structure/field"
 	"testing"
 )
 
@@ -54,4 +55,6 @@ func TestExtractValidationField(t *testing.T) {
 	if nil != err {
 		t.Fatal(err)
 	}
+
+	t.Logf("%+v", (c1.(*field.Text)).Validations)
 }
