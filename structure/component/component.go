@@ -64,4 +64,3 @@ func (c *Component) FillStruct(attrs Attributes) error {
 
 	return nil
 }
-
