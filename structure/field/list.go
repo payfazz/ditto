@@ -10,6 +10,6 @@ type List struct {
 
 func NewList() component.Interface {
 	return &List{
-		Field: &Field{},
+		Field: NewField(),
 	}
 }

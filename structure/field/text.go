@@ -10,7 +10,7 @@ type Text struct {
 
 func NewText() component.Interface {
 	return &Text{
-		Field: &Field{},
+		Field: NewField(),
 	}
 }
 

@@ -10,6 +10,6 @@ type File struct {
 
 func NewFile() component.Interface {
 	return &File{
-		Field: &Field{},
+		Field: NewField(),
 	}
 }
