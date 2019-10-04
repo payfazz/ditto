@@ -2,10 +2,31 @@ package xml2json_test
 
 import (
 	"encoding/json"
+	xj "github.com/basgys/goxml2json"
 	"github.com/payfazz/ditto/xml2json"
 	"reflect"
+	"strings"
 	"testing"
 )
+
+var testt = `
+<DynamicForm>
+	<Section action="send" isShowSummary="true">
+
+	</Section>
+</DynamicForm>
+`
+
+func TestXML2JSON2(t *testing.T) {
+	reader := strings.NewReader(testt)
+
+	jsonResult, err := xj.Convert(reader)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	t.Log(jsonResult)
+}
 
 func TestXML2JSON(t *testing.T) {
 	jsonResult, err := xml2json.XMLToDittoJSON(xmlString)

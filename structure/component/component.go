@@ -1,13 +1,12 @@
 package component
 
 type Interface interface {
-	RequiredKeys() []string
-	ComponentGroup() string
+	RequiredAttrs() []string
 }
 
 type Component struct{}
 
-func (c *Component) RequiredKeys() []string {
+func (c *Component) RequiredAttrs() []string {
 	return []string{
 		"id",
 		"description",

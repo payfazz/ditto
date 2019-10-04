@@ -6,7 +6,7 @@ type Field struct {
 	comp *component.Component
 }
 
-func (field *Field) RequiredKeys() []string {
-	parentKeys := field.comp.RequiredKeys()
+func (field *Field) RequiredAttrs() []string {
+	parentKeys := field.comp.RequiredAttrs()
 	return append(parentKeys, "validations")
 }
