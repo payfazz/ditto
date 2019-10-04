@@ -2,6 +2,7 @@ package xml2json
 
 import (
 	"encoding/json"
+	"errors"
 	xj "github.com/basgys/goxml2json"
 	"github.com/iancoleman/strcase"
 	"strings"
@@ -21,7 +22,17 @@ func XMLToDittoJSON(xml string) (string, error) {
 		return "", err
 	}
 
-	result := parseJSONtoDitto(s)
+	dittoMap, ok := s["Ditto"].(map[string]interface{})
+	if !ok {
+		return "", errors.New("root tag must be <Ditto>")
+	}
+
+	dynamicFormMap, ok := dittoMap["DynamicForm"].(map[string]interface{})
+	if !ok {
+		return "", errors.New("<DynamicForm> tag not found inside <Ditto>")
+	}
+
+	result := parseJSONtoDittoForm(dynamicFormMap)
 
 	m, err := json.Marshal(result)
 	if nil != err {
@@ -31,7 +42,7 @@ func XMLToDittoJSON(xml string) (string, error) {
 	return string(m), nil
 }
 
-func parseJSONtoDitto(s map[string]interface{}) map[string]interface{} {
+func parseJSONtoDittoForm(s map[string]interface{}) map[string]interface{} {
 	var result = make(map[string]interface{})
 	for k, v := range s {
 		result["type"] = strcase.ToSnake(k)
@@ -40,7 +51,7 @@ func parseJSONtoDitto(s map[string]interface{}) map[string]interface{} {
 		childs := make([]map[string]interface{}, 0)
 		for k2, v2 := range member {
 			if k2[0] == '-' {
-				if k2[1:] == "validate" {
+				if k2[1:] == "validation" {
 					result["validations"] = parseValidate(v2)
 					continue
 				}
@@ -49,7 +60,7 @@ func parseJSONtoDitto(s map[string]interface{}) map[string]interface{} {
 				continue
 			}
 
-			child := parseJSONtoDitto(map[string]interface{}{
+			child := parseJSONtoDittoForm(map[string]interface{}{
 				k2: v2,
 			})
 			childs = append(childs, child)

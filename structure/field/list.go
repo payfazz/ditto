@@ -8,12 +8,8 @@ type List struct {
 	*Field
 }
 
-func (text *List) ComponentGroup() string {
-	return "field"
-}
-
 func NewList() component.Interface {
 	return &List{
-		Field: &Field{},
+		Field: NewField(),
 	}
 }

@@ -7,6 +7,22 @@ import (
 	"testing"
 )
 
+func TestXML2JSONFail(t *testing.T) {
+	_, err := xml2json.XMLToDittoJSON(`<a></a>`)
+	if err == nil {
+		t.Fatal("error expected")
+	}
+
+	t.Log(err)
+
+	_, err = xml2json.XMLToDittoJSON(`<Ditto><a></a></Ditto>`)
+	if err == nil {
+		t.Fatal("error expected")
+	}
+
+	t.Log(err)
+}
+
 func TestXML2JSON(t *testing.T) {
 	jsonResult, err := xml2json.XMLToDittoJSON(xmlString)
 	if err != nil {
@@ -37,9 +53,21 @@ func JSONBytesEqual(a, b []byte) (bool, error) {
 }
 
 var xmlString = `
+<Ditto>
+
+<head>
+<Validations name="a">
+	<Validation type="required" errorMessage="Harus diisi"/>
+	<Validation type="regex" errorMessage="Pastikan nama toko alphanumeric" value="^[\w ]{2,100}$"/>
+</Validations>
+</head>
+
+<DynamicForm>
 <SummarySectionSend id="test" description="test" title="test">
-<Text id="a" title="a title" description="a desc" validate="required#Harus diisi|regex:%5E%5B%5Cw%20%5D%7B2%2C100%7D%24#Pastikan nama toko alphanumeric"/>
+<Text id="a" title="a title" description="a desc" validation="required#Harus diisi|regex:%5E%5B%5Cw%20%5D%7B2%2C100%7D%24#Pastikan nama toko alphanumeric"/>
 </SummarySectionSend>
+</DynamicForm>
+</Ditto>
 `
 
 var expectedJSON = `{
