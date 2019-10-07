@@ -27,6 +27,10 @@ type Type struct {
 	ValidInfoKeys []Info           `json:"-"`
 }
 
+func(t *Type) UpdateValidInfoKeys(keys []Info) {
+	t.ValidInfoKeys = keys
+}
+
 func (t *Type) AddAfter(after ...AfterFieldFunc) {
 	t.after = append(t.after, after...)
 }
@@ -38,6 +42,10 @@ func (t Type) MarshalJSON() ([]byte, error) {
 type Group struct {
 	Name          string
 	ValidInfoKeys []Info
+}
+
+func(group *Group) UpdateValidInfoKeys(keys []Info) {
+	group.ValidInfoKeys = keys
 }
 
 var groups = map[string]*Group{}
