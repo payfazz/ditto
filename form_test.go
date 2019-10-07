@@ -2,6 +2,7 @@ package ditto_test
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/payfazz/ditto"
 	"reflect"
 	"testing"
@@ -55,6 +56,45 @@ func TestForm2(t *testing.T) {
 	isEquals, err := JSONBytesEqual(m, []byte(jsonData2))
 	if !isEquals {
 		t.Fatal("true expected")
+	}
+}
+
+func TestAfterFunc(t *testing.T) {
+	list := ditto.GetType("object_searchable_list")
+	if nil == list {
+		t.Fatal("list null")
+	}
+
+	list.AddAfter(func(field *ditto.Field) error {
+		options, ok := field.Info["options"].(map[string]interface{})
+		if !ok {
+			return errors.New("options must be object")
+		}
+
+		options["type"] = "test-change"
+		return nil
+	})
+
+	var s map[string]interface{}
+	err := json.Unmarshal([]byte(jsonData), &s)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	root, err := ditto.NewSectionFromMap(s)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	t.Logf("%+v", root)
+	m, err := json.Marshal(root)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	isEquals, err := JSONBytesEqual(m, []byte(jsonData2))
+	if isEquals {
+		t.Fatal("false expected")
 	}
 }
 

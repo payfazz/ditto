@@ -13,4 +13,3 @@ func NewText() component.Interface {
 		Field: NewField(),
 	}
 }
-

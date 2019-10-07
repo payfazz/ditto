@@ -45,7 +45,7 @@ func TestExtractValidationField(t *testing.T) {
 		"type":        "test",
 		"validations": []interface{}{
 			map[string]interface{}{
-				"type": "required",
+				"type":          "required",
 				"error_message": "",
 			},
 		},

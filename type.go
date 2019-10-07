@@ -17,11 +17,18 @@ type Info struct {
 	IsOptional          bool
 }
 
+type AfterFieldFunc func(field *Field) error
+
 type Type struct {
-	Type          string `json:"type"`
-	Value         string `json:"value"`
-	Group         *Group `json:"-"`
-	ValidInfoKeys []Info `json:"-"`
+	Type          string           `json:"type"`
+	Value         string           `json:"value"`
+	after         []AfterFieldFunc `json:"-"`
+	Group         *Group           `json:"-"`
+	ValidInfoKeys []Info           `json:"-"`
+}
+
+func (t *Type) AddAfter(after ...AfterFieldFunc) {
+	t.after = append(t.after, after...)
 }
 
 func (t Type) MarshalJSON() ([]byte, error) {

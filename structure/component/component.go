@@ -21,11 +21,11 @@ func ValidateRequiredAttrs(obj Interface, attrs Attributes) error {
 	return nil
 }
 
-type Component struct{
-	ID string
+type Component struct {
+	ID          string
 	Description string
-	Title string
-	Type string
+	Title       string
+	Type        string
 }
 
 func (c *Component) RequiredAttrs() []string {

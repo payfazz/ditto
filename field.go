@@ -109,7 +109,7 @@ func newFieldFromMap(data map[string]interface{}, ids map[string]bool) (*Field, 
 		placeholder = &placeholderVal
 	}
 
-	return &Field{
+	result := &Field{
 		ID:          data["id"].(string),
 		Type:        *typ,
 		Title:       data["title"].(string),
@@ -117,7 +117,15 @@ func newFieldFromMap(data map[string]interface{}, ids map[string]bool) (*Field, 
 		Placeholder: placeholder,
 		Validations: vals,
 		Info:        info,
-	}, nil
+	}
+
+	for _, f := range result.Type.after {
+		err := f(result)
+		if nil != err {
+			return nil, err
+		}
+	}
+	return result, nil
 }
 
 func validateInfo(info map[string]interface{}, validInfoKeys []Info) error {
