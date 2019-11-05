@@ -15,7 +15,13 @@ type ValidatedInput struct {
 }
 
 func ValidateFormInput(root *Section, input map[string]interface{}) (*ValidatedInput, error) {
-	validatedRoot := &SectionWithStatus{}
+	validatedRoot := &SectionWithStatus{
+		ID:          root.ID,
+		Type:        root.Type,
+		Title:       root.Title,
+		Description: root.Description,
+		Info:        root.Info,
+	}
 	errMap := make(map[string]string)
 	errVal := validateFormInput(root, input, validatedRoot, errMap)
 
@@ -56,13 +62,14 @@ func validateFormInput(root *Section, input map[string]interface{}, validatedRoo
 			}
 		}
 
+		validatedRoot.ChildSection = childs
 		if len(errs) > 0 {
 			errStr := strings.Join(errs, ",")
 			validatedRoot.Status = map[string]interface{}{
 				"type":    "error",
 				"message": errStr,
 			}
-			validatedRoot.ChildSection = childs
+
 			return errors.New(errStr)
 		}
 
@@ -139,13 +146,14 @@ func validateFormInput(root *Section, input map[string]interface{}, validatedRoo
 		}
 	}
 
+	validatedRoot.ChildField = childs
 	if len(errs) > 0 {
 		errStr := strings.Join(errs, ",")
 		validatedRoot.Status = map[string]interface{}{
 			"type":    "error",
 			"message": errStr,
 		}
-		validatedRoot.ChildField = childs
+
 		return errors.New(errStr)
 	}
 
