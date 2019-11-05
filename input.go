@@ -51,8 +51,7 @@ func validateFormInput(root *Section, input map[string]interface{}, validatedRoo
 				Info:        child.Info,
 			}
 			childs = append(childs, sec)
-			_validatedRoot := &SectionWithStatus{}
-			err := validateFormInput(&child, input, _validatedRoot, errMap)
+			err := validateFormInput(&child, input, sec, errMap)
 			if nil != err {
 				errs = append(errs, err.Error())
 				sec.Status = map[string]interface{}{
