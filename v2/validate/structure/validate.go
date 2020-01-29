@@ -1,9 +1,7 @@
-package validate
+package structure
 
 import (
 	"errors"
-	"github.com/go-yaml/yaml"
-	ditto_yaml "github.com/payfazz/ditto-yaml"
 )
 
 type Validator struct {
@@ -11,23 +9,10 @@ type Validator struct {
 	version  string
 }
 
-func New() *Validator {
-	dittoVersion := "v0.1"
-
-	metadata, err := ditto_yaml.Get(dittoVersion)
-	if nil != err {
-		panic(err)
-	}
-
-	m := make(map[interface{}]interface{})
-	err = yaml.Unmarshal([]byte(metadata), &m)
-	if nil != err {
-		panic(err)
-	}
-
+func New(metadata map[interface{}]interface{}, version string) *Validator {
 	return &Validator{
-		metadata: m,
-		version:  dittoVersion,
+		metadata: metadata,
+		version:  version,
 	}
 }
 

@@ -1,8 +1,8 @@
-package validate_test
+package structure_test
 
 import (
 	"encoding/json"
-	"github.com/payfazz/ditto/v2/structure/validate"
+	"github.com/payfazz/ditto/v2/validate"
 	"testing"
 )
 
@@ -45,7 +45,7 @@ func TestValidator_Validate(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		err = validator.Validate(s)
+		err = validator.ValidateStructure(s)
 		if (nil == err) == c.isError {
 			t.Log(i+1)
 			t.Fatal(err)

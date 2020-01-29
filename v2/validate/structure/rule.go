@@ -1,4 +1,4 @@
-package validate
+package structure
 
 import (
 	"errors"
