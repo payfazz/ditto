@@ -21,6 +21,10 @@ github.com/payfazz/ditto-yaml v0.0.0-20200128032717-8127dcf989b2 h1:ZW52XexNGuTV
 github.com/payfazz/ditto-yaml v0.0.0-20200128032717-8127dcf989b2/go.mod h1:89CwV7xA8lggK41eQ8nb/mHMU0QEwG1FxvF3pI9ev+g=
 github.com/payfazz/ditto-yaml v0.0.0-20200128033150-0ad11c32cfcb h1:ouBkFolqoBMid6r4o2n1W0eJ3nMzoFyyrP0J50KwOvo=
 github.com/payfazz/ditto-yaml v0.0.0-20200128033150-0ad11c32cfcb/go.mod h1:89CwV7xA8lggK41eQ8nb/mHMU0QEwG1FxvF3pI9ev+g=
+github.com/payfazz/ditto-yaml v0.0.0-20200128074931-31224db48610 h1:I+bMti3UneS2LfgHJgoNUB2PtRDf6KAt7oqyYSLv7JU=
+github.com/payfazz/ditto-yaml v0.0.0-20200128074931-31224db48610/go.mod h1:89CwV7xA8lggK41eQ8nb/mHMU0QEwG1FxvF3pI9ev+g=
+github.com/payfazz/ditto-yaml v0.0.0-20200128075457-62762879e2b3 h1:BSUdSTP9BK9Kzj+sXG+gdN/bZZcfayleRWDz+bmpYnA=
+github.com/payfazz/ditto-yaml v0.0.0-20200128075457-62762879e2b3/go.mod h1:89CwV7xA8lggK41eQ8nb/mHMU0QEwG1FxvF3pI9ev+g=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

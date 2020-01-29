@@ -31,65 +31,86 @@ func New() *Validator {
 	}
 }
 
-func (validator *Validator) Validate(data map[string]interface{}) error {
-	typ, ok := data["type"]
+func (validator *Validator) Validate(structure map[string]interface{}) error {
+	dittoType, ok := structure["type"]
 	if !ok {
-		return errors.New("type is expected on data attribute")
+		return errors.New("type is expected on structure attribute")
 	}
 
-	m, ok := validator.metadata[typ]
+	err := validator.validateAttributes(dittoType, structure)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (validator *Validator) validateAttributes(dittoType interface{}, structure map[string]interface{}) error {
+	m, ok := validator.metadata[dittoType]
 	if !ok {
-		return errors.New(typ.(string) + " is not recognized in current ditto version: " + validator.version)
+		return errors.New(dittoType.(string) + " is not recognized in current ditto version: " + validator.version)
 	}
 
 	mapType, ok := m.(map[interface{}]interface{})
-
-	attr, ok := mapType["attributes"]
+	typeAttributes, ok := mapType["attributes"]
 	if !ok {
-		return errors.New("attributes is expected in metadata: " + typ.(string))
+		return errors.New("attributes is expected in metadata: " + dittoType.(string))
 	}
 
-	mapAttr, ok := attr.(map[interface{}]interface{})
+	mapTypeAttributes, ok := typeAttributes.(map[interface{}]interface{})
 	if !ok {
-		return errors.New("map attributes is expected in metadata: " + typ.(string))
+		return errors.New("map attributes is expected in metadata: " + dittoType.(string))
 	}
 
-	for k, v := range mapAttr {
-		rules := singleValueToArray(v)
-		_, ok := data[k.(string)]
-		if !ok {
-			if !isIn(rules, "optional") {
-				return errors.New("required: " + k.(string))
-			}
-			continue
-		}
-
-		for _, rule := range rules {
-			ruleName := ""
-			ruleDetails := make([]interface{}, 0)
-			ruleName, ok := rule.(string)
-
-			if !ok {
-				m := rule.(map[interface{}]interface{})
-				for k, v := range m {
-					ruleName = k.(string)
-					ruleDetails = singleValueToArray(v)
-					break
-				}
-			}
-
-			f, ok := rulesFunc[ruleName]
-			if !ok {
-				return errors.New("rule not found: "  + ruleName)
-			}
-
-			err := f(validator, ruleDetails, data, k.(string))
-			if err != nil {
-				return err
-			}
+	for k, v := range mapTypeAttributes {
+		e := validator.validateAttribute(k.(string), singleValueToArray(v), structure)
+		if e != nil {
+			return e
 		}
 	}
+	return nil
+}
 
+func (validator *Validator) validateAttribute(key string, rules []interface{}, structure map[string]interface{}) error {
+	_, ok := structure[key]
+	if !ok {
+		if !isIn(rules, "optional") {
+			return errors.New("required: " + key)
+		}
+	} else {
+		e := validator.checkRules(rules, structure, key)
+		if e != nil {
+			return e
+		}
+	}
+	return nil
+}
+
+func (validator *Validator) checkRules(rules []interface{}, data map[string]interface{}, key string) error {
+	for _, rule := range rules {
+		ruleName := ""
+		ruleDetails := make([]interface{}, 0)
+		ruleName, isString := rule.(string)
+
+		if !isString {
+			m := rule.(map[interface{}]interface{})
+			for k, v := range m {
+				ruleName = k.(string)
+				ruleDetails = singleValueToArray(v)
+				break
+			}
+		}
+
+		f, funcExist := rulesFunc[ruleName]
+		if !funcExist {
+			return errors.New("rule not found: " + ruleName)
+		}
+
+		err := f(validator, ruleDetails, data, key)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
