@@ -16,8 +16,12 @@ func New(metadata map[interface{}]interface{}, version string) *Validator {
 	}
 }
 
-func (validator *Validator) ExtractField(structure map[string]interface{}) ([]map[string]interface{}, error) {
-	result := make([]map[string]interface{}, 0)
+func (validator *Validator) validateInput(inputs []map[string]interface{}, fields map[string]interface{}) error {
+	return nil
+}
+
+func (validator *Validator) ExtractField(structure map[string]interface{}) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
 
 	dittoType, ok := structure["type"]
 	if !ok {
@@ -31,10 +35,7 @@ func (validator *Validator) ExtractField(structure map[string]interface{}) ([]ma
 
 	descendants := validator.getDescendants(dittoType)
 	if isIn(descendants, "field") {
-		result = append(result, map[string]interface{}{
-			"id": structure["id"],
-			"validations": structure["validations"],
-		})
+		result[structure["id"].(string)] = structure["validations"]
 	}
 
 	for k, v := range attrs {
@@ -45,7 +46,9 @@ func (validator *Validator) ExtractField(structure map[string]interface{}) ([]ma
 				return result, err
 			}
 
-			result = append(result, res...)
+			for k, v := range res {
+				result[k] = v
+			}
 		}
 	}
 
@@ -72,8 +75,8 @@ func (validator *Validator) hasComposite(rules []interface{}) bool {
 	return false
 }
 
-func (validator *Validator) extractFieldFromComposite(composite []interface{}) ([]map[string]interface{}, error) {
-	result := make([]map[string]interface{}, 0)
+func (validator *Validator) extractFieldFromComposite(composite []interface{}) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
 
 	for _, c := range composite {
 		m, ok := c.(map[string]interface{})
@@ -86,7 +89,9 @@ func (validator *Validator) extractFieldFromComposite(composite []interface{}) (
 			return result, err
 		}
 
-		result = append(result, res...)
+		for k, v := range res {
+			result[k] = v
+		}
 	}
 
 	return result, nil

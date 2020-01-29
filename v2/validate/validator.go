@@ -43,6 +43,6 @@ func (v *Validator) ValidateStructure(structure map[string]interface{}) error {
 	return v.structValidator.Validate(structure)
 }
 
-func (v *Validator) ExtractField(structure map[string]interface{}) ([]map[string]interface{}, error) {
+func (v *Validator) ExtractField(structure map[string]interface{}) (map[string]interface{}, error) {
 	return v.valueValidator.ExtractField(structure)
 }

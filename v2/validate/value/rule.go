@@ -12,19 +12,19 @@ import (
 var ErrKeyEmpty = errors.New("function key cannot be empty")
 var ErrFuncEmpty = errors.New("function cannot be empty")
 
-type FieldValidator func(value interface{}, rule string) bool
+type FieldRule func(value interface{}, rule string) bool
 
-var validators = make(map[string]FieldValidator)
+var rules = make(map[string]FieldRule)
 
-func GetValidator(key string) FieldValidator {
-	val, ok := validators[key]
+func GetRule(key string) FieldRule {
+	val, ok := rules[key]
 	if !ok {
 		return nil
 	}
 	return val
 }
 
-func RegisterValidator(tag string, fn FieldValidator) error {
+func RegisterRule(tag string, fn FieldRule) error {
 	if len(tag) == 0 {
 		return ErrKeyEmpty
 	}
@@ -33,12 +33,12 @@ func RegisterValidator(tag string, fn FieldValidator) error {
 		return ErrFuncEmpty
 	}
 
-	validators[tag] = fn
+	rules[tag] = fn
 	return nil
 }
 
 func init() {
-	_ = RegisterValidator("required", func(value interface{}, rule string) bool {
+	_ = RegisterRule("required", func(value interface{}, rule string) bool {
 		if value == nil {
 			return false
 		}
@@ -57,7 +57,7 @@ func init() {
 		return true
 	})
 
-	_ = RegisterValidator("text_length_between", func(value interface{}, rule string) bool {
+	_ = RegisterRule("text_length_between", func(value interface{}, rule string) bool {
 		splitBetween := strings.Split(rule, ",")
 		min, _ := strconv.Atoi(splitBetween[0])
 		max, _ := strconv.Atoi(splitBetween[1])
@@ -75,7 +75,7 @@ func init() {
 		return true
 	})
 
-	_ = RegisterValidator("age_between", func(value interface{}, rule string) bool {
+	_ = RegisterRule("age_between", func(value interface{}, rule string) bool {
 		splitBetween := strings.Split(rule, ",")
 		min, _ := strconv.Atoi(splitBetween[0])
 		max, _ := strconv.Atoi(splitBetween[1])
@@ -99,7 +99,7 @@ func init() {
 		return true
 	})
 
-	_ = RegisterValidator("date_between", func(value interface{}, rule string) bool {
+	_ = RegisterRule("date_between", func(value interface{}, rule string) bool {
 		splitBetween := strings.Split(rule, ",")
 
 		valueObj := value.(map[string]interface{})
@@ -126,7 +126,7 @@ func init() {
 		return true
 	})
 
-	_ = RegisterValidator("regex", func(value interface{}, rule string) bool {
+	_ = RegisterRule("regex", func(value interface{}, rule string) bool {
 		valueObj := value.(map[string]interface{})
 		valueString, ok := valueObj["value"].(string)
 		if !ok {
