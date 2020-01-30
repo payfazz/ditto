@@ -16,10 +16,11 @@ func TestJsonnetToJSON(t *testing.T) {
 
 var json = `
 {
-  person1: {
+  person1: [{
+	id: x,
     name: "Alice",
     welcome: "Hello " + self.name + "!",
-  },
-  person2: self.person1 { name: "Bob" },
+  } for x in std.range(0,5)],
+  person2: self.person1[0] { name: "Bob" },
 }
 `
