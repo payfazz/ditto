@@ -14,11 +14,11 @@ func init() {
 
 func TestValidator_Validate(t *testing.T) {
 	type TestCase struct {
-		json string
+		json    string
 		isError bool
 	}
 
-	var cases = []TestCase {
+	var cases = []TestCase{
 		TestCase{
 			json:    formJson,
 			isError: false,
@@ -41,13 +41,13 @@ func TestValidator_Validate(t *testing.T) {
 		var s map[string]interface{}
 		err := json.Unmarshal([]byte(c.json), &s)
 		if nil != err {
-			t.Log(i+1)
+			t.Log(i + 1)
 			t.Fatal(err)
 		}
 
 		err = validator.ValidateStructure(s)
 		if (nil == err) == c.isError {
-			t.Log(i+1)
+			t.Log(i + 1)
 			t.Fatal(err)
 		}
 	}
@@ -109,7 +109,6 @@ var formJson2 = `{
 	]
 }`
 
-
 var formJsonFailed = `{
 	"type": "summary_section_send"
 }`
@@ -139,4 +138,3 @@ var formJsonFailed2 = `{
 		}
 	]
 }`
-

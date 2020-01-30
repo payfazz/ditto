@@ -8,10 +8,10 @@ import (
 )
 
 type Validator struct {
-	metadata map[interface{}]interface{}
-	version  string
+	metadata        map[interface{}]interface{}
+	version         string
 	structValidator *structure2.Validator
-	valueValidator *value2.Validator
+	valueValidator  *value2.Validator
 }
 
 func New() *Validator {
@@ -32,10 +32,10 @@ func New() *Validator {
 	valueValidator := value2.New(m, dittoVersion)
 
 	return &Validator{
-		metadata: m,
-		version:  dittoVersion,
+		metadata:        m,
+		version:         dittoVersion,
 		structValidator: structValidator,
-		valueValidator: valueValidator,
+		valueValidator:  valueValidator,
 	}
 }
 

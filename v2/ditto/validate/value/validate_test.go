@@ -117,7 +117,6 @@ var formJson2 = `{
 	]
 }`
 
-
 var formJsonFailed = `{
 	"type": "summary_section_send"
 }`
@@ -147,4 +146,3 @@ var formJsonFailed2 = `{
 		}
 	]
 }`
-

@@ -27,7 +27,7 @@ type Type struct {
 	ValidInfoKeys []Info           `json:"-"`
 }
 
-func(t *Type) UpdateValidInfoKeys(keys []Info) {
+func (t *Type) UpdateValidInfoKeys(keys []Info) {
 	t.ValidInfoKeys = keys
 }
 
@@ -44,7 +44,7 @@ type Group struct {
 	ValidInfoKeys []Info
 }
 
-func(group *Group) UpdateValidInfoKeys(keys []Info) {
+func (group *Group) UpdateValidInfoKeys(keys []Info) {
 	group.ValidInfoKeys = keys
 }
 
