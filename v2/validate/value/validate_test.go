@@ -27,6 +27,22 @@ func TestValidator_ExtractField(t *testing.T) {
 	t.Log(m)
 }
 
+func TestValidator_ValidateInput(t *testing.T) {
+	var s map[string]interface{}
+	err := json.Unmarshal([]byte(formJson), &s)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	err = validator.ValidateInput(map[string]interface{}{
+		"name": "aa",
+	}, s)
+
+	if nil != err {
+		t.Fatal(err)
+	}
+}
+
 var formJson = `{
 	"id": "task_form_section",
 	"title": "Nama",

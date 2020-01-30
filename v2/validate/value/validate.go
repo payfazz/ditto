@@ -2,6 +2,7 @@ package value
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Validator struct {
@@ -16,7 +17,36 @@ func New(metadata map[interface{}]interface{}, version string) *Validator {
 	}
 }
 
-func (validator *Validator) validateInput(inputs []map[string]interface{}, fields map[string]interface{}) error {
+func (validator *Validator) ValidateInput(inputs map[string]interface{}, fields map[string]interface{}) error {
+	for id, field := range fields {
+		validations, ok := field.([]interface{})
+		if !ok {
+			return errors.New("field is not an array: " + id)
+		}
+
+		for _, validation := range validations {
+			mapValidation, ok := validation.(map[string]interface{})
+			if !ok {
+				return errors.New("validation is not a map: " + id)
+			}
+
+			typ, ok := mapValidation["type"].(string)
+			if !ok {
+				return errors.New("field does not have type: " + id)
+			}
+
+			rule := rules[typ]
+			if rule == nil {
+				continue
+			}
+
+			fmt.Println(typ, inputs)
+			if !rule(inputs[id], mapValidation["value"]) {
+				return errors.New(mapValidation["error_message"].(string) + " : " + id)
+			}
+		}
+
+	}
 	return nil
 }
 

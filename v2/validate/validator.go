@@ -43,6 +43,14 @@ func (v *Validator) ValidateStructure(structure map[string]interface{}) error {
 	return v.structValidator.Validate(structure)
 }
 
+func (v *Validator) ValidateInput(inputs map[string]interface{}, structure map[string]interface{}) error {
+	fields, err := v.valueValidator.ExtractField(structure)
+	if nil != err {
+		return err
+	}
+	return v.valueValidator.ValidateInput(inputs, fields)
+}
+
 func (v *Validator) ExtractField(structure map[string]interface{}) (map[string]interface{}, error) {
 	return v.valueValidator.ExtractField(structure)
 }

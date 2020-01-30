@@ -12,7 +12,7 @@ import (
 var ErrKeyEmpty = errors.New("function key cannot be empty")
 var ErrFuncEmpty = errors.New("function cannot be empty")
 
-type FieldRule func(value interface{}, rule string) bool
+type FieldRule func(value interface{}, rule interface{}) bool
 
 var rules = make(map[string]FieldRule)
 
@@ -38,27 +38,20 @@ func RegisterRule(tag string, fn FieldRule) error {
 }
 
 func init() {
-	_ = RegisterRule("required", func(value interface{}, rule string) bool {
+	_ = RegisterRule("required", func(value interface{}, rule interface{}) bool {
 		if value == nil {
 			return false
 		}
-		valueObj, ok := value.(map[string]interface{})
-		if !ok {
-			return false
-		}
-		if valueObj["value"] == nil {
-			return false
-		}
 
-		if valueObj["value"].(string) == "" {
+		if value.(string) == "" {
 			return false
 		}
 
 		return true
 	})
 
-	_ = RegisterRule("text_length_between", func(value interface{}, rule string) bool {
-		splitBetween := strings.Split(rule, ",")
+	_ = RegisterRule("text_length_between", func(value interface{}, rule interface{}) bool {
+		splitBetween := strings.Split(rule.(string), ",")
 		min, _ := strconv.Atoi(splitBetween[0])
 		max, _ := strconv.Atoi(splitBetween[1])
 
@@ -75,8 +68,8 @@ func init() {
 		return true
 	})
 
-	_ = RegisterRule("age_between", func(value interface{}, rule string) bool {
-		splitBetween := strings.Split(rule, ",")
+	_ = RegisterRule("age_between", func(value interface{}, rule interface{}) bool {
+		splitBetween := strings.Split(rule.(string), ",")
 		min, _ := strconv.Atoi(splitBetween[0])
 		max, _ := strconv.Atoi(splitBetween[1])
 
@@ -99,8 +92,8 @@ func init() {
 		return true
 	})
 
-	_ = RegisterRule("date_between", func(value interface{}, rule string) bool {
-		splitBetween := strings.Split(rule, ",")
+	_ = RegisterRule("date_between", func(value interface{}, rule interface{}) bool {
+		splitBetween := strings.Split(rule.(string), ",")
 
 		valueObj := value.(map[string]interface{})
 		valueString, ok := valueObj["value"].(string)
@@ -126,14 +119,13 @@ func init() {
 		return true
 	})
 
-	_ = RegisterRule("regex", func(value interface{}, rule string) bool {
-		valueObj := value.(map[string]interface{})
-		valueString, ok := valueObj["value"].(string)
+	_ = RegisterRule("regex", func(value interface{}, rule interface{}) bool {
+		valueString, ok := value.(string)
 		if !ok {
 			return false
 		}
 
-		validationVal, _ := url.QueryUnescape(rule)
+		validationVal, _ := url.QueryUnescape(rule.(string))
 		match, _ := regexp.MatchString(validationVal, valueString)
 		if !match {
 			return false
