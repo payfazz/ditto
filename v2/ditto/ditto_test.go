@@ -6,7 +6,8 @@ import (
 )
 
 func TestJsonnetToJSON(t *testing.T) {
-	res, err := ditto.JsonnetToJSON(json)
+	d := ditto.New("test1", net)
+	res, err := d.JSON(net)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -14,7 +15,7 @@ func TestJsonnetToJSON(t *testing.T) {
 	t.Log(res)
 }
 
-var json = `
+var net = `
 {
   person1: [{
 	id: x,
