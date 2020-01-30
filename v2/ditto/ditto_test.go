@@ -7,7 +7,7 @@ import (
 
 func TestJsonnetToJSON(t *testing.T) {
 	d := ditto.New("test1", net)
-	res, err := d.JSON(net)
+	res, err := d.JSON()
 	if nil != err {
 		t.Fatal(err)
 	}

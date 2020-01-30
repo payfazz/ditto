@@ -7,7 +7,6 @@ import (
 
 type Ditto struct {
 	name string
-	vm *jsonnet.VM
 	ast ast.Node
 }
 
@@ -18,7 +17,6 @@ func New(name string, net string) *Ditto {
 		return cache[name]
 	}
 
-	vm := jsonnet.MakeVM()
 	a, err := jsonnet.SnippetToAST(name, net)
 	if nil != err {
 		panic(err)
@@ -26,7 +24,6 @@ func New(name string, net string) *Ditto {
 
 	d := &Ditto{
 		name: name,
-		vm:   vm,
 		ast: a,
 	}
 
@@ -34,6 +31,7 @@ func New(name string, net string) *Ditto {
 	return d
 }
 
-func (d *Ditto) JSON(net string) (string, error) {
-	return d.vm.Evaluate(d.ast)
+func (d *Ditto) JSON() (string, error) {
+	vm := jsonnet.MakeVM()
+	return vm.Evaluate(d.ast)
 }
