@@ -7,6 +7,7 @@ require (
 	github.com/bitly/go-simplejson v0.5.0 // indirect
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/go-yaml/yaml v2.1.0+incompatible
+	github.com/google/go-jsonnet v0.14.0
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365
 	github.com/payfazz/ditto-yaml v0.0.0-20200128075457-62762879e2b3
 	github.com/stretchr/testify v1.4.0 // indirect

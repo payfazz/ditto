@@ -1,8 +1,8 @@
-package structure_test
+package value_test
 
 import (
 	"encoding/json"
-	"github.com/payfazz/ditto/v2/validate"
+	"github.com/payfazz/ditto/v2/ditto/validate"
 	"testing"
 )
 
@@ -12,44 +12,34 @@ func init() {
 	validator = validate.New()
 }
 
-func TestValidator_Validate(t *testing.T) {
-	type TestCase struct {
-		json string
-		isError bool
+func TestValidator_ExtractField(t *testing.T) {
+	var s map[string]interface{}
+	err := json.Unmarshal([]byte(formJson2), &s)
+	if nil != err {
+		t.Fatal(err)
 	}
 
-	var cases = []TestCase {
-		TestCase{
-			json:    formJson,
-			isError: false,
-		},
-		TestCase{
-			json:    formJson2,
-			isError: false,
-		},
-		TestCase{
-			json:    formJsonFailed,
-			isError: true,
-		},
-		TestCase{
-			json:    formJsonFailed2,
-			isError: true,
-		},
+	m, err := validator.ExtractField(s)
+	if nil != err {
+		t.Fatal(err)
 	}
 
-	for i, c := range cases {
-		var s map[string]interface{}
-		err := json.Unmarshal([]byte(c.json), &s)
-		if nil != err {
-			t.Log(i+1)
-			t.Fatal(err)
-		}
+	t.Log(m)
+}
 
-		err = validator.ValidateStructure(s)
-		if (nil == err) == c.isError {
-			t.Log(i+1)
-			t.Fatal(err)
-		}
+func TestValidator_ValidateInput(t *testing.T) {
+	var s map[string]interface{}
+	err := json.Unmarshal([]byte(formJson), &s)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	err = validator.ValidateInput(map[string]interface{}{
+		"name": "aa",
+	}, s)
+
+	if nil != err {
+		t.Fatal(err)
 	}
 }
 
@@ -93,6 +83,24 @@ var formJson2 = `{
 			"type": "text",
 			"title": "a title",
 			"description": "a desc",
+			"placeholder": null,
+			"validations": [
+				{
+				  "type": "required",
+				  "error_message": "Harus diisi"
+				},
+				{
+				  "type": "regex",
+				  "value": "%5E%5B%5Cw%20%5D%7B2%2C100%7D%24",
+				  "error_message": "Pastikan nama toko alphanumeric"
+				}
+		  	]
+		},
+		{
+			"id": "b",
+			"type": "text",
+			"title": "b title",
+			"description": "b desc",
 			"placeholder": null,
 			"validations": [
 				{

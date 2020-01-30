@@ -3,15 +3,15 @@ package validate
 import (
 	"github.com/go-yaml/yaml"
 	ditto_yaml "github.com/payfazz/ditto-yaml"
-	"github.com/payfazz/ditto/v2/validate/structure"
-	"github.com/payfazz/ditto/v2/validate/value"
+	structure2 "github.com/payfazz/ditto/v2/ditto/validate/structure"
+	value2 "github.com/payfazz/ditto/v2/ditto/validate/value"
 )
 
 type Validator struct {
 	metadata map[interface{}]interface{}
 	version  string
-	structValidator *structure.Validator
-	valueValidator *value.Validator
+	structValidator *structure2.Validator
+	valueValidator *value2.Validator
 }
 
 func New() *Validator {
@@ -28,8 +28,8 @@ func New() *Validator {
 		panic(err)
 	}
 
-	structValidator := structure.New(m, dittoVersion)
-	valueValidator := value.New(m, dittoVersion)
+	structValidator := structure2.New(m, dittoVersion)
+	valueValidator := value2.New(m, dittoVersion)
 
 	return &Validator{
 		metadata: m,
