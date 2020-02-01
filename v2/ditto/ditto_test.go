@@ -1,6 +1,9 @@
 package ditto_test
 
 import (
+	"fmt"
+	"github.com/google/go-jsonnet"
+	"github.com/google/go-jsonnet/ast"
 	"github.com/payfazz/ditto/v2/ditto"
 	"testing"
 )
@@ -37,6 +40,27 @@ func TestTLA(t *testing.T) {
 	vm := ditto.PrepareVM(nil, map[string]interface{}{
 		"prefix": "Happy Hour",
 		//"brunch": true,
+	})
+
+	res, err := d.JSON(vm)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	t.Log(res)
+}
+
+func TestNativeFunc(t *testing.T) {
+	d := ditto.New("test3", net)
+
+	vm := ditto.PrepareVM(nil, nil)
+	vm.NativeFunction(&jsonnet.NativeFunction{
+		Func: func(params []interface{}) (interface{}, error) {
+			fmt.Println(params)
+			return "hello " + params[0].(string), nil
+		},
+		Params: ast.Identifiers{"x"},
+		Name:   "foo",
 	})
 
 	res, err := d.JSON(vm)
@@ -111,5 +135,16 @@ function(prefix, brunch=false) {
     garnish: 'Celery salt & pepper',
     served: 'Tall',
   }
+}
+`
+
+var netNative = `
+{
+  person1: [{
+	id: x,
+    name: "Alice",
+    welcome: "Hello " + self.name + "!",
+  } for x in std.range(0,1)],
+  person2: self.person1[0] { name: "Bob", a:std.native("foo")("hello")},
 }
 `
