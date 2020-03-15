@@ -1,0 +1,35 @@
+{
+  "id": "cnf_ktp_field",
+  "type" : "input_text",
+  "initial_state": "initial",
+  "states" : {
+    "initial": {
+      "actions" : {
+        "onKeyDown" : [
+          "validateOnKeydown"
+        ]
+      }
+    },
+    "error_length": {
+      "actions" : {
+        "onKeyDown" : [
+          "validateOnKeydown"
+        ]
+      }
+    },
+    "error_unique" : {
+      "actions" : {
+        "onKeyDown" : [
+          "validateOnKeydown"
+        ]
+      }
+    },
+    "success" : {
+      "actions" : {
+        "onKeyDown" : [
+          "validateOnKeydown"
+        ]
+      }
+    }
+  }
+}
