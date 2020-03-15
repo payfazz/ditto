@@ -1,0 +1,83 @@
+{
+  "$id": "https://example.com/schemas/ditto/draft-01.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ditto",
+  "description": "Ditto form json schema",
+  "type": "object",
+  "allOf": [
+    {"$ref": "#/definitions/element"}
+  ],
+  "definitions": {
+    "validations": {
+      "description": "element with value validation rules",
+      "type": "object",
+      "required": ["type", "error_message"],
+      "properties": {
+        "type": {
+          "description": "validation rule type",
+          "type": "string"
+        },
+        "error_message": {
+          "description": "error message on failed",
+          "type": "string"
+        },
+        "value": {
+          "description": "validation rule value",
+          "type": "string"
+        }
+      }
+    },
+    "element": {
+      "additionalProperties": false,
+      "required": ["id", "type"],
+      "properties": {
+        "validations": {
+          "description": "element validation rule",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/validations"
+          },
+          "default": []
+        },
+        "id": {
+          "description": "element id",
+          "type": "string"
+        },
+        "type": {
+          "description": "element type",
+          "type": "string"
+        },
+        "children": {
+          "description": "element descendants",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/element"
+          },
+          "default": []
+        },
+        "initial_state": {
+          "description": "element initial state",
+          "type": "string"
+        },
+        "states": {
+          "description": "element states",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["actions"],
+            "properties": {
+              "actions": {
+                "description": "state actions",
+                "type": "object",
+                "additionalProperties": { "type": "array" }
+              }
+            }
+          }
+        },
+        "dependencies": {
+          "initial_state": ["states"]
+        }
+      }
+    }
+  }
+}

@@ -11,5 +11,6 @@ require (
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365
 	github.com/payfazz/ditto-yaml v0.0.0-20200128075457-62762879e2b3
 	github.com/stretchr/testify v1.4.0 // indirect
+	github.com/xeipuuv/gojsonschema v1.2.0
 	golang.org/x/net v0.0.0-20191002035440-2ec189313ef0 // indirect
 )
